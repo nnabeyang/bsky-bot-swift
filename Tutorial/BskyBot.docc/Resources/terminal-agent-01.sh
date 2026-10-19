@@ -1,0 +1,3 @@
+$ swift run bot agent
+Agent is running...
+Found a mention: at://did:plc:abcdefghijklmnopqrstuvwx/app.bsky.feed.post/3mya6f3trks2x

@@ -1,0 +1,3 @@
+$ swift run bot agent
+Agent is running...
+Replied to mention: @mybot.example.com Will I have a good week?

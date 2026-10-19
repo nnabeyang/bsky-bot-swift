@@ -1,0 +1,134 @@
+@Tutorial(time: 20) {
+    @Intro(title: "Posting as a bot") {
+        A bot is an ordinary Bluesky account that a program controls. Log the
+        program in to the bot's account, post 🙂 every few hours, and add a
+        label to the profile so that people know a program runs it.
+    }
+
+    @Section(title: "Log in") {
+        @ContentAndMedia {
+            The bot logs in with an app password. Make a new account for the
+            bot rather than using your own, so that test posts do not fill
+            your followers' timelines.
+
+            The starter already has the code for logging in: `DotEnv` reads
+            `.env`, and `PasswordSession` logs in and refreshes its token. It
+            also has the Swift code generated from every Lexicon the bot uses.
+        }
+
+        @Steps {
+            @Step {
+                In the Bluesky app, log in as the bot and make an app password
+                under Settings > Privacy and security > App passwords. Then copy
+                `.env.example` to `.env`.
+
+                @Code(name: ".env.example", file: "env-example.txt")
+            }
+
+            @Step {
+                Fill in the bot's PDS, handle, and app password. Write the
+                values without quotes. Git ignores `.env`, so the password
+                stays on your machine.
+
+                @Code(name: ".env", file: "env.txt")
+            }
+
+            @Step {
+                Open `Sources/BskyBotSwift/Bot.swift`. `login()` reads the
+                account from the environment and calls
+                `com.atproto.server.createSession` through `PasswordSession`.
+
+                @Code(name: "Bot.swift", file: "bot-01.swift")
+            }
+
+            @Step {
+                `main.swift` loads `.env` and logs in.
+
+                @Code(name: "main.swift", file: "main-01.swift")
+            }
+
+            @Step {
+                Run the bot. It prints the DID of the bot's account.
+
+                @Code(name: "Terminal", file: "terminal-login.sh")
+            }
+        }
+    }
+
+    @Section(title: "Post 🙂") {
+        @ContentAndMedia {
+            A post is an `app.bsky.feed.post` record in the bot's own
+            repository. Writing it is a `com.atproto.repo.createRecord` call to
+            the bot's PDS.
+        }
+
+        @Steps {
+            @Step {
+                Add `makePost(_:)`, which makes a post with the text 🙂, and
+                `createPost(_:session:)`, which writes it to the repository.
+                `FeedPost.make` checks the record against the Lexicon, such as
+                the length of the text, before it is sent.
+
+                @Code(name: "Bot.swift", file: "bot-02.swift", previousFile: "bot-01.swift")
+            }
+
+            @Step {
+                In `main.swift`, add a `post` command that posts now and then
+                every three hours. A failed post is printed, and the bot tries
+                again next time.
+
+                @Code(name: "main.swift", file: "main-02.swift", previousFile: "main-01.swift")
+            }
+
+            @Step {
+                Run `swift run bot post`. When 🙂 appears on the bot's profile,
+                stop the bot with Control-C.
+
+                To see the bot post again without waiting three hours, change
+                the interval to `.seconds(60)` for a few minutes, then change
+                it back.
+
+                @Code(name: "Terminal", file: "terminal-post.sh")
+            }
+        }
+    }
+
+    @Section(title: "Label the account as a bot") {
+        @ContentAndMedia {
+            Accounts that a program runs should say so with a *self-label* on
+            their profile, so that people and moderation tools can tell. The
+            profile is the `app.bsky.actor.profile` record with the key
+            `self`.
+        }
+
+        @Steps {
+            @Step {
+                Add `labelAsBot(_:)`. It reads the profile with
+                `com.atproto.repo.getRecord`, keeps every field, sets `labels`
+                to the `bot` self-label, and writes it back with
+                `com.atproto.repo.putRecord`.
+
+                Only a missing profile is ignored. If reading fails for any
+                other reason, the bot stops instead of overwriting the profile
+                with an empty one. `swapRecord` makes the write fail if the
+                profile changed after it was read.
+
+                @Code(name: "Bot.swift", file: "bot-03.swift", previousFile: "bot-02.swift")
+            }
+
+            @Step {
+                Add a `label` command. You only need to run it once; the label
+                stays on the profile.
+
+                @Code(name: "main.swift", file: "main-03.swift", previousFile: "main-02.swift")
+            }
+
+            @Step {
+                Run `swift run bot label`, and check that the bot's profile
+                shows that it is a bot.
+
+                @Code(name: "Terminal", file: "terminal-label.sh")
+            }
+        }
+    }
+}

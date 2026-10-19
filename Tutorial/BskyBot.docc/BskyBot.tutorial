@@ -1,0 +1,30 @@
+@Tutorials(name: "Bluesky bot") {
+    @Intro(title: "Build a Bluesky bot in Swift") {
+        Write a bot that posts to Bluesky on a schedule, labels its account as
+        a bot, and replies to the people who mention it. This is the Swift
+        version of [Build an Agent](https://atproto.com/guides/bot-tutorial).
+
+        Start from the `main` branch of
+        [bsky-bot-swift](https://github.com/nnabeyang/bsky-bot-swift), which
+        can already log in with an app password. The `complete` branch has the
+        finished bot.
+    }
+
+    @Chapter(name: "Post as a bot") {
+        Log in with an app password, write posts to the bot's repository, and
+        label the account as a bot.
+
+        @Image(source: "posting-chapter.png", alt: "A smiling face and a robot")
+
+        @TutorialReference(tutorial: "doc:PostingAsABot")
+    }
+
+    @Chapter(name: "Reply to mentions") {
+        Find the posts that mention the bot, and reply to each of them once,
+        in the same thread.
+
+        @Image(source: "replying-chapter.png", alt: "A speech bubble and a crystal ball")
+
+        @TutorialReference(tutorial: "doc:ReplyingToMentions")
+    }
+}

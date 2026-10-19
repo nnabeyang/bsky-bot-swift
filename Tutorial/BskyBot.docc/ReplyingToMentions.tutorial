@@ -1,0 +1,121 @@
+@Tutorial(time: 30) {
+    @Intro(title: "Replying to mentions") {
+        Turn the bot into an agent: every minute, find the posts that mention
+        it and reply to each of them. Only reply to people who mention the bot;
+        a bot that replies to posts nobody asked it to may be flagged as spam.
+    }
+
+    @Section(title: "Find new mentions") {
+        @ContentAndMedia {
+            When someone mentions the bot, the bot gets a notification.
+            `app.bsky.notification.listNotifications` lists them, and each one
+            says why it was sent and whether it has been read.
+
+            A notification counts as read once the account says it has seen
+            the notifications up to some time, with
+            `app.bsky.notification.updateSeen`. The Bluesky app does this when
+            you open the notifications screen. A bot has to do it itself, or
+            it finds the same mentions every time it looks.
+        }
+
+        @Steps {
+            @Step {
+                Add `checkMentions(_:)`. It notes the time, lists the
+                notifications, and picks the unread mentions. For now it prints
+                them. At the end, it marks everything up to the noted time as
+                read.
+
+                The time is taken before listing, so a mention that arrives
+                while the bot is working stays unread for the next check.
+
+                @Code(name: "Bot.swift", file: "bot-04.swift", previousFile: "bot-03.swift")
+            }
+
+            @Step {
+                Add an `agent` command that checks for mentions every minute.
+
+                @Code(name: "main.swift", file: "main-04.swift", previousFile: "main-03.swift")
+            }
+
+            @Step {
+                Run `swift run bot agent`, and mention the bot from your own
+                account. Within a minute the bot prints the mention, and only
+                once.
+
+                While you test, do not open the bot's notifications in the
+                Bluesky app; that marks them as read too.
+
+                @Code(name: "Terminal", file: "terminal-agent-01.sh")
+            }
+        }
+    }
+
+    @Section(title: "Reply in the thread") {
+        @ContentAndMedia {
+            A reply is a post with a `reply` field that holds two references:
+            `parent`, the post it answers, and `root`, the first post of the
+            thread. The AppView expects `root` to be the top of the thread,
+            and checks the thread's reply settings against it.
+        }
+
+        @Steps {
+            @Step {
+                Create `Oracle.swift`. For now the bot replies with a fortune
+                picked from a list. The same question always gets the same
+                fortune.
+
+                @Code(name: "Oracle.swift", file: "oracle-01.swift")
+            }
+
+            @Step {
+                In `checkMentions(_:)`, reply to each mention instead of
+                printing it. `reply(to:session:)` fetches the mentioning post
+                with `app.bsky.feed.getPostThread`, writes a reply, and posts
+                it.
+
+                The mention is the reply's `parent`. If the mention is itself a
+                reply, the bot keeps that post's `root`; otherwise the mention
+                starts the thread and is the `root` too. A failed reply is
+                printed, and the other mentions are still answered.
+
+                @Code(name: "Bot.swift", file: "bot-05.swift", previousFile: "bot-04.swift")
+            }
+
+            @Step {
+                Run `swift run bot agent` again, and mention the bot. It
+                replies within a minute. Reply to its reply and mention it
+                again: its next reply has the first post as its `root`.
+
+                @Code(name: "Terminal", file: "terminal-agent-02.sh")
+            }
+        }
+    }
+
+    @Section(title: "Write replies with the on-device model") {
+        @ContentAndMedia {
+            Let a language model write the replies as "The Oracle", the fortune
+            teller from the original tutorial. On a Mac with Apple
+            Intelligence, the Foundation Models framework runs a model on the
+            device, with no API key and no cost.
+        }
+
+        @Steps {
+            @Step {
+                Give the model the Oracle's instructions and the text of the
+                mention. If Foundation Models is not available, as on Linux, if
+                the model does not answer, or if its answer is too long for a
+                post, the bot falls back to a fortune.
+
+                @Code(name: "Oracle.swift", file: "oracle-02.swift", previousFile: "oracle-01.swift")
+            }
+
+            @Step {
+                Run `swift run bot agent` on a Mac with Apple Intelligence, and
+                mention the bot. The Oracle answers in the language you wrote
+                in. Change the instructions to give your bot its own character.
+
+                @Code(name: "Oracle.swift", file: "oracle-02.swift")
+            }
+        }
+    }
+}
