@@ -13,3 +13,8 @@ import Testing
   #expect(variables.map(\.key) == ["BOT_PDS", "BOT_HANDLE", "BOT_PASSWORD"])
   #expect(variables.map(\.value) == ["", "alice.example.com", "abcd-efgh # not a comment"])
 }
+
+@Test func drawsTheSameFortuneForTheSameQuestion() {
+  #expect(fortune(for: "Will it rain?") == fortune(for: "Will it rain?"))
+  #expect(fortunes.contains(fortune(for: "")))
+}
