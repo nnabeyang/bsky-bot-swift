@@ -1,0 +1,51 @@
+{
+  "generate": ["client"],
+  "module": "Sources/BskyBotSwift/Lexicon",
+  "dependencies": [
+    {
+      "location": "https://github.com/bluesky-social/atproto.git",
+      "lexicons": [
+        {
+          "path": "lexicons/app/bsky",
+          "nsIds": [
+            "app.bsky.actor.defs",
+            "app.bsky.actor.profile",
+            "app.bsky.embed.defs",
+            "app.bsky.embed.external",
+            "app.bsky.embed.gallery",
+            "app.bsky.embed.images",
+            "app.bsky.embed.record",
+            "app.bsky.embed.recordWithMedia",
+            "app.bsky.embed.video",
+            "app.bsky.feed.defs",
+            "app.bsky.feed.getPostThread",
+            "app.bsky.feed.post",
+            "app.bsky.feed.postgate",
+            "app.bsky.feed.threadgate",
+            "app.bsky.graph.defs",
+            "app.bsky.labeler.defs",
+            "app.bsky.notification.defs",
+            "app.bsky.notification.listNotifications",
+            "app.bsky.notification.updateSeen",
+            "app.bsky.richtext.facet"
+          ]
+        },
+        {
+          "path": "lexicons/com/atproto",
+          "nsIds": [
+            "com.atproto.label.defs",
+            "com.atproto.moderation.defs",
+            "com.atproto.repo.createRecord",
+            "com.atproto.repo.defs",
+            "com.atproto.repo.getRecord",
+            "com.atproto.repo.putRecord",
+            "com.atproto.repo.strongRef",
+            "com.atproto.server.createSession",
+            "com.atproto.server.refreshSession"
+          ]
+        }
+      ],
+      "state": { "tag": "@atproto/api@0.27.0" }
+    }
+  ]
+}
